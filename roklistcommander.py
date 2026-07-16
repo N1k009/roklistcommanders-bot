@@ -73,5 +73,9 @@ async def suvari(ctx): await ctx.send("Seçim yap:", view=StratejiView("suvari")
 @bot.command()
 async def mix(ctx): await ctx.send("Seçim yap:", view=StratejiView("mix"))
 
-keep_alive()
-bot.run("TOKEN_BURAYA")
+# KODUN EN SONUNU ŞU ŞEKİLDE GÜNCELLE:
+token = os.environ.get("DISCORD_TOKEN")
+if not token:
+    print("HATA: DISCORD_TOKEN bulunamadı! Railway ayarlarından ekleyin.")
+else:
+    bot.run(token)
