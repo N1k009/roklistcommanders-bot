@@ -17,13 +17,13 @@ DATA = {
     },
     "suvari": {
         "alan": [("gang_ghamchan.png", "achilleus.png"), ("arthur.png", "achilleus.png"), ("achilleus.png", "gang_ghamchan.png"), ("arthur.png", "huo_qubing.png"), ("attila.png", "achilleus.png")],
-        "rally": [("attila.png", "subutai.png"), ("attila.png", "achilleus.png"), ("attila.png", "martel.png")],
+        "rally": [("attila.png", "subutai.png"), ("attila.png", "achilleus.png"), ("attila.png", "charles_martel.png")],
         "garnizon": [("elanor.png", "heraclius.png")]
     },
     "okcu": {
         "alan": [("qin_shi.png", "zhuge.png"), ("alparslan.png", "hermann.png"), ("qin_shi.png", "ysg.png"), ("zhuge.png", "hermann.png")],
         "rally": [("shapur.png", "ashurbanipal.png")],
-        "garnizon": [("hayam.png", "heraclius.png"), ("hayam.png", "cheo.png"), ("cheo.png", "heraclius.png")]
+        "garnizon": [("hayam.png", "heraclius.png"), ("hayam.png", "cheo.png"), ("cheo_yeong.png", "heraclius.png")]
     },
     "mix": {
         "garnizon": [("lapu_lapu.png", "mathias.png"), ("mathias.png", "lapu_lapu.png"), ("mathias.png", "heraclius.png"), ("heraclius.png", "mathias.png")]
