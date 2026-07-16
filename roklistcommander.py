@@ -7,8 +7,6 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# SIRALAMA VE KOMBİNASYONLAR
-# Her bir tuple (x, y) bir "Komutan1 + Komutan2" setini temsil eder
 DATA = {
     "piyade": {
         "alan": [("sun_tzu.png", "bai_qi.png"), ("bai_qi.png", "liu_che.png"), ("sun_tzu.png", "liu_che.png"), ("scipio.png", "liu_che.png"), ("ragnar.png", "scipio.png"), ("liu_che.png", "scipio.png"), ("liu_che.png", "alexander.png")],
@@ -41,18 +39,15 @@ class StratejiView(discord.ui.View):
         
         await interaction.response.send_message(f"**{self.kategori.upper()} - {tip.upper()} Sıralamanız:**", ephemeral=True)
         
-        # Her ikili kombinasyonu döngüye al
         for komutan1, komutan2 in kombinasyonlar:
             mesaj = f"{komutan1.replace('.png','').replace('_',' ')} + {komutan2.replace('.png','').replace('_',' ')}"
+            files = []
+            if os.path.exists(f"gorseller/{komutan1}"): files.append(discord.File(f"gorseller/{komutan1}"))
+            if os.path.exists(f"gorseller/{komutan2}"): files.append(discord.File(f"gorseller/{komutan2}"))
             
-            # 1. Komutan
-            if os.path.exists(f"gorseller/{komutan1}"):
-                await interaction.followup.send(content=f"**{mesaj}**", file=discord.File(f"gorseller/{komutan1}"), ephemeral=True)
-            # 2. Komutan
-            if os.path.exists(f"gorseller/{komutan2}"):
-                await interaction.followup.send(file=discord.File(f"gorseller/{komutan2}"), ephemeral=True)
+            if files:
+                await interaction.followup.send(content=f"**{mesaj}**", files=files, ephemeral=True)
         
-        # Mix Garnizon notu
         if self.kategori == "mix":
             await interaction.followup.send("Liderlik komutanları genellikle 2.cil komutanlar, buff için veya garnizon için kullanılıyorlar.\nLeader commanders are generally used as secondary commanders, for buffs or for garrison.", ephemeral=True)
 
@@ -63,19 +58,26 @@ class StratejiView(discord.ui.View):
     @discord.ui.button(label="Garnizon", style=discord.ButtonStyle.success)
     async def garnizon(self, i, b): await self.gonder(i, "garnizon")
 
-# Komutlar
 @bot.command()
-async def piyade(ctx): await ctx.send("Seçim yap:", view=StratejiView("piyade"))
-@bot.command()
-async def okcu(ctx): await ctx.send("Seçim yap:", view=StratejiView("okcu"))
-@bot.command()
-async def suvari(ctx): await ctx.send("Seçim yap:", view=StratejiView("suvari"))
-@bot.command()
-async def mix(ctx): await ctx.send("Seçim yap:", view=StratejiView("mix"))
+async def piyade(ctx): 
+    await ctx.message.delete()
+    await ctx.send("Seçim yap:", view=StratejiView("piyade"))
 
-# KODUN EN SONUNU ŞU ŞEKİLDE GÜNCELLE:
+@bot.command()
+async def okcu(ctx): 
+    await ctx.message.delete()
+    await ctx.send("Seçim yap:", view=StratejiView("okcu"))
+
+@bot.command()
+async def suvari(ctx): 
+    await ctx.message.delete()
+    await ctx.send("Seçim yap:", view=StratejiView("suvari"))
+
+@bot.command()
+async def mix(ctx): 
+    await ctx.message.delete()
+    await ctx.send("Seçim yap:", view=StratejiView("mix"))
+
+keep_alive()
 token = os.environ.get("DISCORD_TOKEN")
-if not token:
-    print("HATA: DISCORD_TOKEN bulunamadı! Railway ayarlarından ekleyin.")
-else:
-    bot.run(token)
+bot.run(token)
