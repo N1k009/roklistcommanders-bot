@@ -21,7 +21,7 @@ DATA = {
     "okcu": {
         "open-field": [("qin_shi.png", "zhuge.png", "okcu_alan_ekipman.png"), ("alparslan.png", "hermann.png", "okcu_alan_ekipman.png"), ("qin_shi.png", "ysg.png", "okcu_alan_ekipman.png"), ("zhuge.png", "hermann.png", "okcu_alan_ekipman.png")],
         "rally": [("shapur.png", "ashurbanipal.png", "okcu_rally_ekipman.png")],
-        "garnizon": [("hayam.png", "heraclius.png", "okcu_garnizon_ekipman.png"), ("hayam.png", "cheo.png", "okcu_garnizon_ekipman.png"), ("cheo_yeong.png", "heraclius.png", "okcu_garnizon_ekipman.png")]
+        "garnizon": [("hayam.png", "heraclius.png", "okcu_garnizon_ekipman.png"), ("hayam.png", "cheo_yeong.png", "okcu_garnizon_ekipman.png"), ("cheo_yeong.png", "heraclius.png", "okcu_garnizon_ekipman.png")]
     },
     "mix": {
         "garnizon": [("lapu_lapu.png", "mathias.png", "mix_garnizon_ekipman.png"), ("mathias.png", "lapu_lapu.png", "mix_garnizon_ekipman.png"), ("mathias.png", "heraclius.png", "mix_garnizon_ekipman.png"), ("heraclius.png", "mathias.png", "mix_garnizon_ekipman.png")]
