@@ -28,30 +28,46 @@ DATA = {
     }
 }
 
+class NextButton(discord.ui.Button):
+    def __init__(self, kategori, tip, index):
+        super().__init__(label="Next", style=discord.ButtonStyle.primary)
+        self.kategori = kategori
+        self.tip = tip
+        self.index = index
+    async def callback(self, interaction: discord.Interaction):
+        view = StratejiView(self.kategori, self.tip, self.index)
+        await view.send_page(interaction)
+
 class StratejiView(discord.ui.View):
-    def __init__(self, kategori):
+    def __init__(self, kategori, tip=None, index=0):
         super().__init__(timeout=None)
         self.kategori = kategori
+        self.tip = tip
+        self.index = index
+        self.kombinasyonlar = DATA.get(kategori, {}).get(tip, []) if tip else []
 
     async def gonder(self, interaction, tip):
-        kombinasyonlar = DATA.get(self.kategori, {}).get(tip)
-        if not kombinasyonlar: return
+        self.tip = tip
+        self.kombinasyonlar = DATA.get(self.kategori, {}).get(tip, [])
+        self.index = 0
+        await self.send_page(interaction)
+
+    async def send_page(self, interaction):
+        if not self.kombinasyonlar or self.index >= len(self.kombinasyonlar): return
+        k1, k2, ekipman = self.kombinasyonlar[self.index]
+        mesaj = f"**{self.kategori.upper()} - {self.tip.upper()} ({self.index + 1}/{len(self.kombinasyonlar)})**\n{k1.replace('.png','').replace('_',' ')} + {k2.replace('.png','').replace('_',' ')}"
+        files = []
+        for dosya in [ekipman, k1, k2]:
+            if os.path.exists(f"gorseller/{dosya}"): files.append(discord.File(f"gorseller/{dosya}"))
         
-        await interaction.response.send_message(f"**{self.kategori.upper()} - {tip.upper()} Sıralamanız:**", ephemeral=True)
+        view = StratejiView(self.kategori, self.tip, self.index + 1)
+        if self.index + 1 < len(self.kombinasyonlar):
+            view.add_item(NextButton(self.kategori, self.tip, self.index + 1))
+        else:
+            view.add_item(discord.ui.Button(label="End of List", style=discord.ButtonStyle.secondary, disabled=True))
         
-        for k1, k2, ekipman in kombinasyonlar:
-            mesaj = f"{k1.replace('.png','').replace('_',' ')} + {k2.replace('.png','').replace('_',' ')}"
-            files = []
-            # 3'lü kontrol: k1, k2 ve ekipman
-            for dosya in [ekipman, k1, k2]:
-                if os.path.exists(f"gorseller/{dosya}"):
-                    files.append(discord.File(f"gorseller/{dosya}"))
-            
-            if files:
-                await interaction.followup.send(content=f"**{mesaj}**", files=files, ephemeral=True)
-        
-        if self.kategori == "mix":
-            await interaction.followup.send("Liderlik komutanları genellikle 2.cil komutanlar, buff için veya garnizon için kullanılıyorlar.\nLeader commanders are generally used as secondary commanders, for buffs or for garrison.", ephemeral=True)
+        if interaction.response.is_done(): await interaction.followup.send(content=mesaj, files=files, view=view, ephemeral=True)
+        else: await interaction.response.send_message(content=mesaj, files=files, view=view, ephemeral=True)
 
     @discord.ui.button(label="Open-Field", style=discord.ButtonStyle.primary)
     async def open_field(self, i, b): await self.gonder(i, "open-field")
@@ -60,27 +76,14 @@ class StratejiView(discord.ui.View):
     @discord.ui.button(label="Garnizon", style=discord.ButtonStyle.success)
     async def garnizon(self, i, b): await self.gonder(i, "garnizon")
 
-# Komutlar (Buton isimleri güncellendi)
 @bot.command()
-async def piyade(ctx): 
-    await ctx.message.delete()
-    await ctx.send("Piyade için seçim yap:", view=StratejiView("piyade"))
-
+async def piyade(ctx): await ctx.message.delete(); await ctx.send("Seçim yap:", view=StratejiView("piyade"))
 @bot.command()
-async def okcu(ctx): 
-    await ctx.message.delete()
-    await ctx.send("Okçu için seçim yap:", view=StratejiView("okcu"))
-
+async def okcu(ctx): await ctx.message.delete(); await ctx.send("Seçim yap:", view=StratejiView("okcu"))
 @bot.command()
-async def suvari(ctx): 
-    await ctx.message.delete()
-    await ctx.send("Süvari için seçim yap:", view=StratejiView("suvari"))
-
+async def suvari(ctx): await ctx.message.delete(); await ctx.send("Seçim yap:", view=StratejiView("suvari"))
 @bot.command()
-async def mix(ctx): 
-    await ctx.message.delete()
-    await ctx.send("Mix için seçim yap:", view=StratejiView("mix"))
+async def mix(ctx): await ctx.message.delete(); await ctx.send("Seçim yap:", view=StratejiView("mix"))
 
 keep_alive()
-token = os.environ.get("DISCORD_TOKEN")
-bot.run(token)
+bot.run(os.environ.get("DISCORD_TOKEN"))
